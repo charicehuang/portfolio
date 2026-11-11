@@ -34,16 +34,95 @@
     }
     a.button:hover, a.button:focus-visible { background: #004182; }
     a.button svg { width: 18px; height: 18px; fill: currentColor; }
+    form {
+      margin: 0.75rem auto 0;
+      max-width: 420px;
+      text-align: left;
+    }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .field {
+      display: block;
+      width: 100%;
+      margin-bottom: 0.5rem;
+      padding: 0.75rem;
+      border: 1px solid #000;
+      border-radius: 0;
+      background: #fff;
+      color: #000;
+      font: inherit;
+      font-size: 1rem;
+    }
+    textarea.field { min-height: 100px; resize: vertical; }
+    .honey { display: none; }
+    .form-row { display: flex; justify-content: center; margin-top: 0.75rem; }
+    button {
+      padding: 0.5rem 1.5rem;
+      border: 1px solid #000;
+      background: #000;
+      color: #fff;
+      font: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover, button:focus-visible { background: #fff; color: #000; }
+    button:disabled { opacity: 0.5; cursor: default; }
+    #status { margin-top: 0.5rem; text-align: center; font-size: 1rem; min-height: 1.2em; }
+    a.button { margin-top: 1rem; }
   </style>
 </head>
 <body>
   <main>
     <h1>Charice Huang</h1>
     <p>Site coming soon...</p>
+    <p><strong>What are you grateful for today?</strong></p>
+
+    <form id="grateful-form">
+      <label class="sr-only" for="name">Name</label>
+      <input id="name" class="field" type="text" name="name" placeholder="Name <3" required maxlength="100">
+      <label class="sr-only" for="message">What are you grateful for today?</label>
+      <textarea id="message" class="field" name="message" placeholder="Your Message" rows="6" required maxlength="2000"></textarea>
+      <input class="honey" type="text" name="_honey" tabindex="-1" autocomplete="off">
+      <div class="form-row"><button type="submit">Send</button></div>
+      <p id="status" role="status"></p>
+    </form>
+
     <a class="button" href="https://www.linkedin.com/in/charicehuang/" target="_blank" rel="noopener noreferrer">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
       LinkedIn
     </a>
   </main>
+
+  <script>
+    const form = document.getElementById('grateful-form');
+    const status = document.getElementById('status');
+    const button = form.querySelector('button');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (form._honey.value) return;
+      button.disabled = true;
+      status.textContent = 'Sending...';
+      try {
+        const res = await fetch('https://formsubmit.co/ajax/charice.huang@nyu.edu', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            name: form.elements['name'].value,
+            message: form.message.value,
+            _subject: 'Someone shared what they are grateful for',
+            _template: 'basic'
+          })
+        });
+        const data = await res.json();
+        if (!res.ok || data.success === 'false' || data.success === false) throw new Error(data.message);
+        form.reset();
+        status.textContent = 'Thank you for sharing!';
+      } catch (err) {
+        status.textContent = 'Something went wrong. Please try again.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>

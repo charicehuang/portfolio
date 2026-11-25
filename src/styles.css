@@ -1,0 +1,1268 @@
+/* ------------------------------------------------------------------
+   Palette — the whole site uses only these.
+   Blue = clickable (on paper) and the cyanotype ground.
+   Cherry = ink marks (postmarks, seals, stamps). Black = text on paper.
+------------------------------------------------------------------- */
+:root {
+  --blue: #597694;
+  --paper: #ffffff;
+  --cherry: #7a314a;
+  --cherry-deep: #5f132e;
+  --ink: #000000;
+
+  --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --script: 'Style Script', 'Snell Roundhand', cursive;
+  --sans: 'Hanken Grotesk Variable', 'Hanken Grotesk', system-ui, sans-serif;
+
+  --slow: 900ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Fine photographic grain, tiled. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* Large soft blotches: where the "emulsion" was brushed on thicker or thinner. */
+  --wash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' preserveAspectRatio='none'%3E%3Cfilter id='w' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .009' numOctaves='3' seed='7'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='600' height='400' filter='url(%23w)'/%3E%3C/svg%3E");
+}
+
+@font-face {
+  font-family: 'Hanken Grotesk Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/hanken-grotesk/files/hanken-grotesk-latin-wght-normal.woff2') format('woff2-variations');
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--blue);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  color: var(--paper);
+  font-family: var(--serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.script {
+  font-family: var(--script);
+}
+
+/* ---------------------------- Background ---------------------------- */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--blue);
+}
+
+.bg-wash,
+.bg-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bg-wash {
+  background: var(--wash) center / cover no-repeat;
+  mix-blend-mode: soft-light;
+  opacity: 0.85;
+}
+
+.bg-grain {
+  background: var(--grain);
+  mix-blend-mode: soft-light;
+  opacity: 0.55;
+}
+
+.flora {
+  position: absolute;
+  height: auto;
+  overflow: visible;
+}
+
+/* Flower centres let the blue back through. */
+.flora-hole {
+  fill: var(--blue);
+  opacity: 0.5;
+}
+
+/* ----------------------------- Landing ------------------------------ */
+.landing {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(3rem, 10vh, 6.5rem);
+  padding: clamp(5rem, 14vh, 9rem) 1.5rem;
+  text-align: center;
+  transition: opacity var(--slow) var(--ease);
+}
+
+/* The gratitude stamp, stuck on to the right of the name, slightly crooked.
+   It straightens a little when you reach for it. On a wide screen it hangs
+   in the margin beside the name, so the name itself stays centred. */
+.name-line {
+  position: relative;
+}
+
+.landing-stamp {
+  position: absolute;
+  left: calc(100% + clamp(1.25rem, 3vw, 2.5rem));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.landing-stamp .stamp-wrap {
+  display: block;
+  transform: rotate(4deg);
+  transition: transform 700ms var(--ease);
+}
+
+.landing-stamp:hover .stamp-wrap,
+.landing-stamp:focus-visible .stamp-wrap {
+  transform: rotate(1deg) translateY(-3px);
+}
+
+/* A smaller blossom, so the invitation fits where the denomination goes:
+   three short lines, centred. */
+.landing-stamp .stamp {
+  padding-bottom: 12px;
+}
+
+.landing-stamp .stamp-art {
+  width: 82px;
+  align-self: center;
+  margin-top: 4px;
+}
+
+.landing-stamp .stamp-year {
+  font-size: 0.7rem;
+  line-height: 1.25;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* Narrower screens don't have that margin, so the name and a smaller stamp
+   share the line, centred together. (zoom, not scale, so the space the
+   stamp takes up shrinks with it.) */
+@media (max-width: 767px) {
+  .name-line {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 3vw, 1.25rem);
+  }
+
+  .landing-stamp {
+    position: static;
+    flex: none;
+    transform: none;
+  }
+
+  .landing-stamp .stamp-wrap {
+    zoom: 0.85;
+  }
+}
+
+/* On a phone the stamp is smaller still, so its words are printed larger
+   (and the blossom smaller) to stay readable. */
+@media (max-width: 480px) {
+  .landing-stamp .stamp-wrap {
+    zoom: 0.68;
+  }
+
+  .landing-stamp .stamp-art {
+    width: 68px;
+  }
+
+  .landing-stamp .stamp-year {
+    font-size: 0.9rem;
+    line-height: 1.2;
+    letter-spacing: 0.03em;
+  }
+}
+
+/* The narrowest phones can't fit the name and the stamp on one line, so the
+   name stacks, one word per line, and the box hugs the words so the pair
+   stays centred. That frees room for a slightly larger stamp. */
+@media (max-width: 420px) {
+  .name-line .name {
+    width: min-content;
+  }
+
+  .landing-stamp .stamp-wrap {
+    zoom: 0.8;
+  }
+}
+
+.landing.is-dimmed {
+  opacity: 0.18;
+}
+
+/* A postcard is open: it is the only thing on the blue.
+   (To keep the name faintly visible behind it instead, raise this opacity.) */
+.landing.is-cleared {
+  opacity: 0;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.4rem, 1.5vh, 1rem);
+}
+
+.name {
+  margin: 0;
+  font-weight: 400;
+  font-size: clamp(3.25rem, 10.5vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+}
+
+.tagline {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.55em;
+  min-height: 44px;
+  padding: 0.25em 0.2em;
+  font-size: clamp(1.35rem, 3.4vw, 2.15rem);
+  line-height: 1.2;
+}
+
+.tagline--plain {
+  margin: 0;
+}
+
+.tagline-text {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.28em;
+}
+
+.tagline .script {
+  font-size: 1.32em;
+  line-height: 0.9;
+  margin-right: 0.04em;
+}
+
+/* The underline is a hand-wobbled stroke that "inks in" from left to right. */
+.tagline-rule {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 0.3em;
+  overflow: visible;
+}
+
+.tagline-rule path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ink-in 1.8s var(--ease) 0.7s forwards;
+}
+
+.tagline:hover .tagline-rule path,
+.tagline:focus-visible .tagline-rule path {
+  animation: ink-in 1.2s var(--ease) forwards;
+  stroke-width: 2;
+}
+
+.tagline-arrow {
+  font-family: var(--sans);
+  font-size: 0.62em;
+  transform: translateY(-0.12em);
+  transition: transform 600ms var(--ease);
+}
+
+.tagline:hover .tagline-arrow,
+.tagline:focus-visible .tagline-arrow {
+  transform: translate(0.3em, -0.12em);
+}
+
+@keyframes ink-in {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ------------------------------- Tabs ------------------------------- */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem clamp(0.75rem, 2.4vw, 2rem);
+  max-width: 64rem;
+}
+
+.tab {
+  position: relative;
+  min-height: 44px;
+  padding: 0.5rem 0.35rem;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 450;
+  letter-spacing: 0.06em;
+  opacity: 0.82;
+  transition: opacity 500ms var(--ease);
+}
+
+.tab::after {
+  content: '';
+  position: absolute;
+  left: 0.35rem;
+  right: 0.35rem;
+  bottom: 0.55rem;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 700ms var(--ease);
+}
+
+.tab:hover,
+.tab:focus-visible,
+.tab[aria-pressed='true'] {
+  opacity: 1;
+}
+
+.tab:hover::after,
+.tab:focus-visible::after,
+.tab[aria-pressed='true']::after {
+  transform: scaleX(1);
+}
+
+/* ------------------------------ Paper ------------------------------- */
+/* Shared by the philosophy card now and by every postcard later. */
+.paper {
+  position: relative;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 3px;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.1),
+    0 12px 28px -8px rgb(0 0 0 / 0.28),
+    0 40px 70px -30px rgb(0 0 0 / 0.3);
+}
+
+.paper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--grain);
+  mix-blend-mode: multiply;
+  opacity: 0.11;
+  pointer-events: none;
+}
+
+.link {
+  color: var(--blue);
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+}
+
+/* ------------------------- Philosophy card -------------------------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  /* "safe": a card taller than the screen starts at the top and scrolls,
+     instead of being centred with its top cut off out of reach. */
+  place-items: safe center;
+  padding: 1.25rem;
+  overflow: auto;
+  /* The drum of stamps runs edge to edge; never scroll sideways to it. */
+  overflow-x: hidden;
+  /* Up-and-down swipes scroll the page; sideways ones, anywhere on the
+     screen, are left to the drum of stamps. */
+  touch-action: pan-y pinch-zoom;
+}
+
+.philosophy {
+  width: min(100%, 40rem);
+  min-height: min(26rem, 70svh);
+  padding: clamp(1.75rem, 5vw, 3.25rem);
+  display: flex;
+  flex-direction: column;
+  animation: card-in 1100ms var(--ease) both;
+}
+
+.philosophy-title {
+  margin: 0;
+  font-weight: 400;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  opacity: 0.6;
+}
+
+.philosophy-title .script {
+  font-size: 1.3em;
+  margin-right: 0.04em;
+}
+
+.label {
+  margin: 0 0 0.9rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.philosophy-body {
+  margin: auto 0;
+  padding: 1.75rem 0;
+}
+
+.philosophy-text {
+  margin: 0;
+  max-width: 17em;
+  font-size: clamp(1.75rem, 5.2vw, 2.7rem);
+  line-height: 1.12;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+.philosophy-close {
+  align-self: flex-start;
+  min-height: 44px;
+  margin-bottom: -0.75rem;
+}
+
+.seal {
+  color: var(--cherry);
+}
+
+.philosophy-seal {
+  position: absolute;
+  right: clamp(1.25rem, 4vw, 2.5rem);
+  bottom: clamp(1.25rem, 4vw, 2.5rem);
+  width: clamp(3.5rem, 11vw, 4.75rem);
+  transform: rotate(-9deg);
+  animation: ink-settle 1500ms var(--ease) 500ms both;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Wet ink: slightly spread and soft, then it tightens as it dries. */
+@keyframes ink-settle {
+  from {
+    opacity: 0;
+    filter: blur(2.5px);
+    transform: rotate(-9deg) scale(1.07);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: rotate(-9deg) scale(1);
+  }
+}
+
+/* ----------------------------- Postcard ----------------------------- */
+.postcard-stage {
+  width: min(100%, 44rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: card-in 1100ms var(--ease) both;
+}
+
+.postcard {
+  width: 100%;
+  perspective: 1800px;
+  cursor: pointer;
+}
+
+/* Both faces sit in the same grid cell, so the card is always as tall as
+   its taller side and the flip never changes its size. */
+.postcard-inner {
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform 1400ms var(--ease);
+}
+
+.postcard.is-flipped .postcard-inner {
+  transform: rotateY(180deg);
+}
+
+.postcard-face {
+  grid-area: 1 / 1;
+  aspect-ratio: 3 / 2;
+  min-width: 0;
+  padding: clamp(1.5rem, 4.5vw, 2.5rem);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.postcard-back {
+  transform: rotateY(180deg);
+}
+
+.postcard-front {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 3vw, 1.75rem);
+  text-align: center;
+}
+
+.blossom {
+  color: var(--cherry);
+}
+
+.postcard-motif {
+  width: clamp(2.75rem, 8vw, 3.75rem);
+  transform: rotate(-4deg);
+}
+
+.postcard-title {
+  margin: 0;
+  font-weight: 400;
+  font-size: clamp(2.75rem, 10vw, 5.25rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+/* Pressed into the paper, not printed: there is no ink. The letter shape is
+   filled with shadow, then a white text-shadow nudged downward covers all of
+   it except a thin rim along the top edge, which reads as the shaded wall of
+   the impression, with a faint tint left on the floor of it. */
+.deboss {
+  color: transparent;
+  background-color: rgb(0 0 0 / 0.34);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 0.035em 0.03em rgb(255 255 255 / 0.84);
+}
+
+/* Divided back: message left, postage right. */
+.postcard-back {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+}
+
+.postcard-message {
+  padding-right: clamp(1.25rem, 3.5vw, 2rem);
+}
+
+.postcard-note {
+  margin: 0;
+  font-size: clamp(1.05rem, 2.1vw, 1.3rem);
+  line-height: 1.36;
+  text-wrap: pretty;
+}
+
+.postcard-note p {
+  margin: 0;
+}
+
+.postcard-note p + p {
+  margin-top: 0.8em;
+}
+
+/* The opening line, in bold; the name in it is signed in script, like
+   "Thinking" in the tagline. */
+.postcard-greeting {
+  font-weight: 700;
+}
+
+.postcard-greeting .script {
+  color: var(--cherry);
+  font-weight: 400;
+  font-size: 1.3em;
+  line-height: 0.8;
+  margin-right: 0.04em;
+}
+
+.postcard-postage {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-left: clamp(1.25rem, 3.5vw, 2rem);
+  border-left: 1px solid rgb(0 0 0 / 0.2);
+}
+
+.postcard-stampbox {
+  width: 3.5rem;
+  aspect-ratio: 5 / 6;
+  border: 1px dashed rgb(0 0 0 / 0.3);
+}
+
+.postcard-address {
+  align-self: stretch;
+  margin-top: auto;
+  display: grid;
+  gap: 1.7rem;
+  padding-bottom: 0.5rem;
+}
+
+.postcard-address span {
+  border-bottom: 1px solid rgb(0 0 0 / 0.2);
+}
+
+/* A photo on the postage side. The frame takes whatever height the card
+   has and the picture is cropped to fill it, so a photo of any shape fits
+   without changing the card's size. */
+.postcard-postage.has-photo {
+  align-items: stretch;
+}
+
+.postcard-photo {
+  position: relative;
+  flex: 1;
+  min-height: 12rem;
+}
+
+.postcard-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  border-radius: 2px;
+}
+
+/* The "Sticker" cell: a little white card stuck on the photo, near the
+   bottom, a bit crooked and hanging over the photo's left edge, the way
+   you'd press one onto a print. */
+.photo-sticker {
+  margin: 0;
+  padding: 0.8rem 0.95rem 0.85rem;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 4px;
+  font-size: clamp(0.88rem, 1.5vw, 0.98rem);
+  line-height: 1.32;
+  text-wrap: pretty;
+  transform: rotate(-2.5deg);
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.14),
+    0 8px 16px -6px rgb(0 0 0 / 0.34);
+}
+
+.postcard-photo .photo-sticker {
+  position: absolute;
+  left: -0.9rem;
+  right: 1.1rem;
+  bottom: 1.1rem;
+}
+
+/* With no photo, the sticker sits on the postage side above the address lines. */
+.postcard-postage > .photo-sticker {
+  align-self: stretch;
+  margin-bottom: 1.25rem;
+}
+
+.postcard-controls {
+  display: flex;
+  gap: 1.25rem;
+}
+
+/* ------------------------------ Stamps ------------------------------ */
+/* A postcard with stamps is a set of cards, one per stamp, stood round a
+   drum like the faces of a lantern. The drum's axis is a little behind the
+   front card; each card sits --theta further round than the last, and the
+   whole set turns by --pos (which stamp is in front). The stage runs the full
+   width of the screen so the neighbours can show at the sides, and clips
+   them at its edges. */
+.ring-stage {
+  --card-w: min(34rem, 100vw - 16rem);
+  --theta: 36deg;
+  --r: calc(var(--card-w) * 1.6);
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  overflow-x: clip;
+  perspective: calc(var(--card-w) * 2.6);
+}
+
+/* All the cards share one grid cell, so every card is as tall as the
+   tallest and the drum never changes size as it turns. */
+.ring {
+  --pos: 0;
+  display: grid;
+  justify-items: center;
+  transform-style: preserve-3d;
+  /* The ring's own flat box sits in front of the cards at the sides and
+     would catch their clicks; only the cards themselves take the pointer. */
+  pointer-events: none;
+}
+
+.ring > * {
+  pointer-events: auto;
+}
+
+.ring-card {
+  /* How far round from the front this card is, in cards, and how far either way. */
+  --d: calc(var(--i) - var(--pos));
+  --far: max(var(--d), -1 * var(--d));
+  /* Which side faces out: the writing, except on the first card, which is
+     the postcard's picture side. */
+  --turn: 180deg;
+  grid-area: 1 / 1;
+  width: var(--card-w);
+  display: grid;
+  transform-style: preserve-3d;
+  transform: translateZ(calc(-1 * var(--r))) rotateY(calc(var(--d) * var(--theta))) translateZ(var(--r))
+    rotateY(var(--turn));
+  transition: transform 1100ms var(--ease);
+  cursor: pointer;
+}
+
+.ring-card.is-title {
+  --turn: 0deg;
+}
+
+/* "scroll →" under the name on the picture side. */
+.title-hint {
+  margin: 0;
+  color: var(--blue);
+  font-family: var(--sans);
+  font-weight: 500;
+}
+
+/* The postcard shape is a minimum, set on the card (whose width is fixed);
+   every card then stretches to the tallest, and its faces fill it. Were the
+   shape left on the faces, a stretched face would keep it by growing wider. */
+.ring-card {
+  aspect-ratio: 3 / 2;
+  align-self: stretch;
+}
+
+/* Cards more than three round, on the far side of the drum, fade away. */
+.ring-card .postcard-face {
+  aspect-ratio: auto;
+  align-self: stretch;
+  opacity: clamp(0, calc(3.8 - var(--far)), 1);
+  transition: opacity 800ms var(--ease);
+}
+
+/* Further round, a card sinks into the blue, so the eye stays on the front one. */
+.ring-card .postcard-face::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--blue);
+  opacity: min(0.5, calc(var(--far) * 0.28));
+  pointer-events: none;
+  transition: opacity 1100ms var(--ease);
+}
+
+/* The picture side arrives on its own; the other cards fan out a moment later. */
+.ring:not(.is-spread) .ring-card:not(.is-active) .postcard-face {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 400ms var(--ease),
+    visibility 0s 400ms;
+}
+
+/* While the drum turns it is moved frame by frame from the script, so the
+   CSS glides step aside (they would only make it lag). */
+.ring.is-moving .ring-card,
+.ring.is-moving .postcard-face,
+.ring.is-moving .postcard-face::after {
+  transition: none;
+}
+
+/* A drag can start anywhere on the screen. */
+.overlay.is-dragging,
+.overlay.is-dragging * {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.stamp-side .postcard-postage {
+  align-items: center;
+  justify-content: center;
+  gap: 1.75rem;
+}
+
+.ring img,
+.ring .stamp {
+  -webkit-user-drag: none;
+}
+
+@keyframes stamp-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The shadow lives on the wrapper because the stamp itself is masked. */
+.stamp-wrap {
+  position: relative;
+  filter: drop-shadow(0 1px 1.5px rgb(0 0 0 / 0.32)) drop-shadow(0 6px 10px rgb(0 0 0 / 0.1));
+}
+
+/* Perforated edge: a 12px grid of round holes, shifted so the holes sit
+   exactly on the edge, plus a solid block that fills the middle back in.
+   The stamp's width and height must stay multiples of 12px for the holes to
+   meet neatly at the corners. */
+.stamp {
+  width: 132px;
+  height: 168px;
+  padding: 14px 14px 9px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--paper);
+  --holes: radial-gradient(circle at center, transparent 3.4px, #000 4px) -6px -6px / 12px 12px;
+  --middle: linear-gradient(#000, #000) center / calc(100% - 9px) calc(100% - 9px) no-repeat;
+  -webkit-mask: var(--middle), var(--holes);
+  mask: var(--middle), var(--holes);
+}
+
+.stamp-art {
+  display: block;
+  width: 100%;
+}
+
+.stamp-year {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  color: var(--cherry-deep);
+}
+
+/* The ring is centred near the stamp's lower-left corner, half on the
+   stamp and half on the card, with the bars running across the stamp. */
+.postmark {
+  position: absolute;
+  left: -50px;
+  top: 74px;
+  width: 218px;
+  overflow: visible;
+  color: var(--cherry);
+  transform: rotate(-9deg);
+  pointer-events: none;
+}
+
+.postmark text {
+  font-family: var(--sans);
+  font-size: 7.4px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* The newest stamp's postmark: same mark, darker (fresher) ink. */
+.postmark--fresh {
+  color: var(--cherry-deep);
+}
+
+/* "scroll →" with a mouse, "swipe →" on a touch screen. */
+.carousel-hint {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.hint-touch {
+  display: none;
+}
+
+@media (hover: none) {
+  .hint-mouse {
+    display: none;
+  }
+
+  .hint-touch {
+    display: inline;
+  }
+}
+
+.postcard-note + .stamp-details {
+  margin-top: 1.25rem;
+}
+
+.stamp-name {
+  margin: 0 0 0.6rem;
+  font-weight: 400;
+  font-size: clamp(1.6rem, 3.6vw, 2.1rem);
+  line-height: 1.05;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+.stamp-role,
+.stamp-meta {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+}
+
+.stamp-role {
+  font-weight: 550;
+}
+
+.stamp-meta {
+  margin-top: 0.2rem;
+  opacity: 0.6;
+}
+
+.stamp-meta span + span::before {
+  content: '·';
+  margin: 0 0.5em;
+}
+
+.stamp-line {
+  margin: 0.9rem 0 0;
+  font-size: clamp(1.05rem, 2.1vw, 1.25rem);
+  line-height: 1.32;
+  text-wrap: pretty;
+}
+
+.stamp-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+}
+
+/* A snapshot with its caption written underneath. The picture is cropped
+   to one shape so stamps with photos all take the same room on the card. */
+.stamp-photo {
+  margin: 1rem 0 0;
+}
+
+.stamp-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: 50% 62%;
+  border-radius: 2px;
+}
+
+.stamp-photo figcaption {
+  margin-top: 0.5rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  /* Cherry, like the ink marks, as if the caption were stamped under the print. */
+  color: var(--cherry);
+}
+
+.stamp-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-top: 1rem;
+  border: 0;
+  border-radius: 2px;
+  background: var(--ink);
+  /* The still is 4:3 with black bars; cropping it to the frame drops them. */
+  object-fit: cover;
+}
+
+/* ----------------------------- Gratitude ---------------------------- */
+.gratitude-stage {
+  width: min(100%, 30rem);
+}
+
+/* One thing at a time: the form first, then her list once it's sent. */
+.gratitude {
+  width: 100%;
+  padding: clamp(1.5rem, 6vw, 2.75rem);
+}
+
+.gratitude-side {
+  display: grid;
+  gap: 2rem;
+  animation: stamp-in 900ms var(--ease) both;
+}
+
+.gratitude-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.gratitude-thanks {
+  margin: 0;
+}
+
+.gratitude-title {
+  display: block;
+  margin: 0 0 1rem;
+  font-weight: 400;
+  font-size: clamp(1.6rem, 3.6vw, 2.1rem);
+  line-height: 1.05;
+}
+
+.gratitude-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.45rem;
+  font-size: clamp(1.05rem, 2.1vw, 1.25rem);
+  line-height: 1.3;
+  text-wrap: pretty;
+}
+
+.gratitude-list--plain {
+  gap: 0.8rem;
+}
+
+/* Fields are written on, like the lines on a postcard: no boxes. */
+.gratitude-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.4rem 0;
+  font: inherit;
+  font-size: 1.15rem;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid rgb(0 0 0 / 0.3);
+  border-radius: 0;
+}
+
+.gratitude-input:focus-visible {
+  outline: 0;
+  border-bottom-color: var(--blue);
+  box-shadow: 0 1px 0 var(--blue);
+}
+
+.gratitude-input--ruled {
+  --line: 2.1rem;
+  display: block;
+  padding: 0;
+  line-height: var(--line);
+  resize: none;
+  border-bottom: 0;
+  background: repeating-linear-gradient(transparent 0 calc(var(--line) - 1px), rgb(0 0 0 / 0.3) calc(var(--line) - 1px) var(--line));
+  background-attachment: local;
+}
+
+.gratitude-input--ruled:focus-visible {
+  box-shadow: none;
+}
+
+.gratitude-input::placeholder {
+  color: var(--ink);
+  opacity: 0.4;
+}
+
+.gratitude-input--ruled {
+  margin-top: 0.75rem;
+}
+
+/* Bot trap: never shown to people. */
+.honey {
+  display: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.gratitude-send {
+  margin-top: auto;
+  padding-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 1.25rem;
+}
+
+.gratitude-send .link {
+  min-height: 44px;
+}
+
+.gratitude-send .link:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.gratitude-status {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+/* --------------------------- Small screens -------------------------- */
+@media (max-width: 560px) {
+  /* The postcard stands upright and fills the width; the back stacks,
+     message first, postage underneath. */
+  .postcard-face {
+    aspect-ratio: 5 / 7;
+  }
+
+  .postcard-back {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+  }
+
+  .postcard-message {
+    padding: 0 0 1.25rem;
+  }
+
+  .postcard-postage {
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    gap: 1.5rem;
+    padding: 1.25rem 0 0;
+    border-left: 0;
+    border-top: 1px solid rgb(0 0 0 / 0.2);
+  }
+
+  .postcard-address {
+    flex: 1;
+    margin-top: 0;
+    gap: 1.3rem;
+  }
+
+  /* The photo sits under the note as an upright print, full width. */
+  .postcard-postage.has-photo {
+    display: block;
+  }
+
+  .postcard-photo {
+    aspect-ratio: 4 / 5;
+  }
+
+  /* The cards leave room at the sides for a sliver of each neighbour, and
+     stand closer together round a smaller drum. */
+  .ring-stage {
+    --card-w: calc(100vw - 4.5rem);
+    --theta: 40deg;
+    --r: calc(var(--card-w) * 1.45);
+  }
+
+  .ring-card {
+    aspect-ratio: 5 / 7;
+  }
+
+  /* On each stamp's card the stamp and its count go on top, the writing under it. */
+  .stamp-side {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .stamp-side .postcard-postage {
+    order: -1;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.5rem 0 1rem;
+    border-top: 0;
+    border-bottom: 1px solid rgb(0 0 0 / 0.2);
+  }
+
+  .stamp-side .postcard-message {
+    padding: 1.25rem 0 0;
+  }
+
+  .tabs {
+    gap: 0 1.1rem;
+    max-width: 22rem;
+  }
+
+  .tagline {
+    gap: 0.4em;
+  }
+
+}
+
+/* --------------------------- Reduced motion ------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .tagline-rule path {
+    stroke-dashoffset: 0;
+  }
+
+  /* No flip: with transitions off above, the postcard simply shows its other
+     side. Drop the 3D turn entirely so nothing rotates even for a frame.
+     (The drum of stamps keeps its shape; with no transitions it moves from
+     one card to the next in a single step.) */
+  .postcard-inner,
+  .postcard.is-flipped .postcard-inner,
+  .postcard .postcard-back {
+    transform: none;
+  }
+
+  .postcard .postcard-face[inert] {
+    visibility: hidden;
+  }
+}

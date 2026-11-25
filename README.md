@@ -47,5 +47,5 @@ A stamp can show a photo too: put the image in `src/photos/` and write its file 
 1. Landing page: background, name, tagline, philosophy card, tabs — done
 2. About Me! postcard with flip — done
 3. Stamps on every postcard, one card per stamp, stood round a turning drum — done
-4. Gratitude card (opened by the "click me to exchange gratitude!" stamp beside the name; its form emails via formsubmit.co, then shows the gratitude list) — done
+4. Gratitude card (opened by the "click me to exchange gratitude!" stamp beside the name; its form emails via formsubmit.co, then mail comes back: one line from `Gratitude-Affirmations.csv`, picked at random each time) — done
 5. Footer — next

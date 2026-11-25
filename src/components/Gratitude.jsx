@@ -1,18 +1,33 @@
 import { useEffect, useRef, useState } from 'react';
 import { site, gratitudes, affirmations } from '../data/index.js';
 
+// Every line that can come back in the post: the gratitudes and the
+// affirmations from Gratitude-Affirmations.csv, in one pile.
+const letters = [...gratitudes, ...affirmations];
+// The line sent last time, so two notes in a row don't get the same reply.
+let lastLetter = null;
+
+/** One line from the pile, at random. Never the one sent last time, unless it's the only one. */
+function drawLetter() {
+  const pool = letters.length > 1 ? letters.filter((l) => l !== lastLetter) : letters;
+  lastLetter = pool[Math.floor(Math.random() * pool.length)] ?? null;
+  return lastLetter;
+}
+
 /**
  * The gratitude postcard, opened by the "click me to exchange gratitude!"
  * stamp on the landing page.
  * It starts as a blank card for the visitor to fill in. Once their note has
- * been sent, the card answers in kind: what Charice is grateful for, then her
- * affirmations (both from Gratitude-Affirmations.csv).
+ * been sent, mail comes back: one gratitude or affirmation, drawn at random
+ * each time a note is sent.
  */
 export default function Gratitude({ onClose }) {
   const closeRef = useRef(null);
+  const mailRef = useRef(null);
   const [status, setStatus] = useState('');
   const [sending, setSending] = useState(false);
   const [shared, setShared] = useState(false);
+  const [letter, setLetter] = useState(null);
   const email = site('Email');
 
   useEffect(() => {
@@ -23,6 +38,12 @@ export default function Gratitude({ onClose }) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
+
+  // The Send button goes when the form does, so focus moves to the reply,
+  // which also has it read out.
+  useEffect(() => {
+    if (shared) mailRef.current?.focus({ preventScroll: true });
+  }, [shared]);
 
   // Sends the note to Charice's inbox through FormSubmit (formsubmit.co), the
   // same way the earlier "coming soon" page did. The address is Email in Site.csv.
@@ -46,7 +67,7 @@ export default function Gratitude({ onClose }) {
       });
       const data = await res.json();
       if (!res.ok || data.success === 'false' || data.success === false) throw new Error(data.message);
-      setStatus('Thank you for sharing!');
+      setLetter(drawLetter());
       setShared(true);
     } catch {
       setStatus('Something went wrong. Please try again.');
@@ -61,28 +82,16 @@ export default function Gratitude({ onClose }) {
         <article className="paper gratitude">
           {shared ? (
             <div className="gratitude-side">
-              <p className="label gratitude-thanks" role="status">
-                {status}
-              </p>
-              {gratitudes.length > 0 && (
-                <section>
-                  <h2 className="gratitude-title">I am grateful for…</h2>
-                  <ul className="gratitude-list">
-                    {gratitudes.map((g) => (
-                      <li key={g.Text}>{g.Text}</li>
-                    ))}
-                  </ul>
-                </section>
-              )}
-              {affirmations.length > 0 && (
-                <section>
-                  <p className="label">Affirmations</p>
-                  <ul className="gratitude-list gratitude-list--plain">
-                    {affirmations.map((a) => (
-                      <li key={a.Text}>{a.Text}</li>
-                    ))}
-                  </ul>
-                </section>
+              <h2 ref={mailRef} tabIndex={-1} className="gratitude-title">
+                {letter ? "You've received mail!:" : 'Thank you for sharing!'}
+              </h2>
+              {letter && (
+                <div className="gratitude-letter">
+                  {/* A gratitude on its own ("Being in college") needs its
+                      opening words; an affirmation is a whole sentence already. */}
+                  {letter.Type === 'Gratitude' && <p className="label">I am grateful for…</p>}
+                  <p className="gratitude-letter-text">{letter.Text}</p>
+                </div>
               )}
             </div>
           ) : (

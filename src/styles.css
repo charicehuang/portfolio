@@ -1028,25 +1028,19 @@ button {
   width: min(100%, 30rem);
 }
 
-/* One thing at a time: the form first, then her list once it's sent. */
+/* One thing at a time: the form first, then the mail that comes back. */
 .gratitude {
   width: 100%;
   padding: clamp(1.5rem, 6vw, 2.75rem);
 }
 
 .gratitude-side {
-  display: grid;
-  gap: 2rem;
   animation: stamp-in 900ms var(--ease) both;
 }
 
 .gratitude-form {
   display: flex;
   flex-direction: column;
-}
-
-.gratitude-thanks {
-  margin: 0;
 }
 
 .gratitude-title {
@@ -1057,19 +1051,22 @@ button {
   line-height: 1.05;
 }
 
-.gratitude-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 0.45rem;
-  font-size: clamp(1.05rem, 2.1vw, 1.25rem);
-  line-height: 1.3;
-  text-wrap: pretty;
+/* The reply's heading only takes focus so it's read out; it isn't a control,
+   so it gets no focus ring. */
+.gratitude-side .gratitude-title {
+  margin-bottom: 1.5rem;
+  outline: 0;
 }
 
-.gratitude-list--plain {
-  gap: 0.8rem;
+.gratitude-letter .label {
+  margin-bottom: 0.5rem;
+}
+
+.gratitude-letter-text {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.8vw, 1.55rem);
+  line-height: 1.3;
+  text-wrap: pretty;
 }
 
 /* Fields are written on, like the lines on a postcard: no boxes. */

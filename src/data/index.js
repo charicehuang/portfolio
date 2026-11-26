@@ -45,7 +45,7 @@ export const site = (field) => {
 export const postcards = parseCsv(postcardsCsv).filter((p) => p.Postcard);
 
 // Photos live in src/photos/ and are matched to a postcard by file name:
-// the postcard's name in lowercase with dashes, e.g. "About Me!" -> about-me.jpg.
+// the postcard's name in lowercase with dashes, e.g. "About Me" -> about-me.jpg.
 // Drop a file in to add a photo; remove it to take the photo away.
 const photoFiles = import.meta.glob('../photos/*.{jpg,jpeg,png,webp}', { eager: true, query: '?url', import: 'default' });
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');

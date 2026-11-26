@@ -3,7 +3,7 @@ import { site, postcards, stampsFor } from '../data/index.js';
 import PhilosophyCard from './PhilosophyCard.jsx';
 import Postcard from './Postcard.jsx';
 import Gratitude from './Gratitude.jsx';
-import Blossom from './Blossom.jsx';
+import Blossom, { motifFor } from './Blossom.jsx';
 
 // A tab brings its postcard forward once that postcard has something on its
 // back: a greeting, a note, a sticker, or at least one stamp.
@@ -96,13 +96,16 @@ export default function Landing() {
             ))}
         </header>
 
+        {/* One small card per section: its postcard's blossom and its name.
+            The blossom is chosen exactly as the postcard's is (motifFor, by
+            the same position), so a card and its postcard share a flower. */}
         {postcards.length > 0 && (
           <nav className="tabs" aria-label="Postcards">
-            {postcards.map((p) => (
+            {postcards.map((p, i) => (
               <button
                 key={p.Postcard}
                 type="button"
-                className="tab"
+                className="paper section-card"
                 aria-pressed={active === p.Postcard}
                 aria-haspopup={opens(p) ? 'dialog' : undefined}
                 onClick={(e) => {
@@ -110,7 +113,8 @@ export default function Landing() {
                   setActive(active === p.Postcard ? null : p.Postcard);
                 }}
               >
-                {p.Postcard}
+                <Blossom motif={motifFor(p['Front motif'], i)} className="section-card-motif" />
+                <span className="section-card-name">{p.Postcard}</span>
               </button>
             ))}
           </nav>

@@ -318,15 +318,105 @@ button {
   }
 }
 
-/* ------------------------------- Tabs ------------------------------- */
+/* --------------------------- Section cards -------------------------- */
+/* One small postcard per section, its blossom beside its name: six across
+   on a laptop, three across on a tablet, two across on a phone. They share
+   the postcards' paper (white, grain, the same shadow) and blossom ink. The
+   name is printed in plain black rather than pressed in like a postcard's
+   title, because pressed-in letters this small are too faint to read. */
+/* Every row the same height, so a name that wraps ("Campus Activities")
+   doesn't make its row taller than the rest. */
 .tabs {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.25rem clamp(0.75rem, 2.4vw, 2rem);
-  max-width: 64rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 0.75rem;
+  width: min(100%, 26rem);
 }
 
+@media (min-width: 600px) {
+  .tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: min(100%, 46rem);
+  }
+}
+
+@media (min-width: 1080px) {
+  .tabs {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    width: min(100%, 68rem);
+  }
+}
+
+/* The blossom and name sit together in the middle of the card, so a short
+   name doesn't leave a blank stretch of paper on one side. */
+.section-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0.8rem 0.9rem;
+  text-align: left;
+  transition: transform 700ms var(--ease);
+}
+
+/* Reaching for a card lifts it a little and turns its blossom, slowly. */
+.section-card:hover,
+.section-card:focus-visible,
+.section-card[aria-pressed='true'] {
+  transform: translateY(-3px);
+}
+
+/* The ring sits on the blue, so it's white like the rest of the landing. */
+.section-card:focus-visible {
+  outline-color: var(--paper);
+}
+
+.section-card-motif {
+  flex: none;
+  width: 2.1rem;
+  transition: transform 700ms var(--ease);
+}
+
+.section-card:hover .section-card-motif,
+.section-card:focus-visible .section-card-motif,
+.section-card[aria-pressed='true'] .section-card-motif {
+  transform: rotate(-4deg);
+}
+
+.section-card-name {
+  min-width: 0;
+  font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+@media (max-width: 599px) {
+  .section-card-motif {
+    width: 1.8rem;
+  }
+}
+
+/* The narrowest phones: a little less padding, so "Activities" still fits
+   on its line in a half-width card. */
+@media (max-width: 380px) {
+  .section-card {
+    gap: 0.5rem;
+    padding: 0.7rem;
+  }
+
+  .section-card-motif {
+    width: 1.6rem;
+  }
+
+  .section-card-name {
+    font-size: 1rem;
+  }
+}
+
+/* --------------------------- Under a card --------------------------- */
+/* "Turn over" and "Close", under a postcard or the gratitude card. */
 .tab {
   position: relative;
   min-height: 44px;
@@ -1223,11 +1313,6 @@ button {
 
   .stamp-side .postcard-message {
     padding: 1.25rem 0 0;
-  }
-
-  .tabs {
-    gap: 0 1.1rem;
-    max-width: 22rem;
   }
 
   .tagline {

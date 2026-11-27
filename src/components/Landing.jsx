@@ -26,6 +26,7 @@ export default function Landing() {
   const name = site('Name');
   const tagline = site('Tagline');
   const philosophy = site('Tagline card');
+  const taglineHover = site('Tagline hover');
   const [cardOpen, setCardOpen] = useState(false);
   const [active, setActive] = useState(null);
   const trigger = useRef(null);
@@ -82,7 +83,14 @@ export default function Landing() {
           </div>
           {tagline &&
             (philosophy ? (
-              <button ref={trigger} type="button" className="tagline" aria-haspopup="dialog" onClick={() => setCardOpen(true)}>
+              <button
+                ref={trigger}
+                type="button"
+                className="tagline"
+                aria-haspopup="dialog"
+                aria-describedby={taglineHover ? 'tagline-note' : undefined}
+                onClick={() => setCardOpen(true)}
+              >
                 <span className="tagline-text">
                   <Tagline text={tagline} />
                   <svg className="tagline-rule" viewBox="0 0 300 8" preserveAspectRatio="none" aria-hidden="true">
@@ -90,6 +98,14 @@ export default function Landing() {
                   </svg>
                 </span>
                 <span className="tagline-arrow" aria-hidden="true">→</span>
+                {/* Pointing at the tagline brings up a hint of what's behind
+                    it ("Tagline hover" in Site.csv), on the same slip of paper
+                    as the section cards' messages. A click opens the card. */}
+                {taglineHover && (
+                  <span className="hover-note tagline-note" id="tagline-note" aria-hidden="true">
+                    {taglineHover}
+                  </span>
+                )}
               </button>
             ) : (
               <p className="tagline tagline--plain"><Tagline text={tagline} /></p>
@@ -108,6 +124,7 @@ export default function Landing() {
                 className="paper section-card"
                 aria-pressed={active === p.Postcard}
                 aria-haspopup={opens(p) ? 'dialog' : undefined}
+                aria-describedby={p['Hover message'] ? `section-note-${i}` : undefined}
                 onClick={(e) => {
                   lastTab.current = e.currentTarget;
                   setActive(active === p.Postcard ? null : p.Postcard);
@@ -115,6 +132,14 @@ export default function Landing() {
               >
                 <Blossom motif={motifFor(p['Front motif'], i)} className="section-card-motif" />
                 <span className="section-card-name">{p.Postcard}</span>
+                {/* The "Hover message" note that slips up above the card. It's
+                    left out of the button's name (so the card still reads
+                    as "Quests") and read out as its description instead. */}
+                {p['Hover message'] && (
+                  <span className="hover-note section-note" id={`section-note-${i}`} aria-hidden="true">
+                    {p['Hover message']}
+                  </span>
+                )}
               </button>
             ))}
           </nav>

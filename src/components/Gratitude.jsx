@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { site, gratitudes, affirmations } from '../data/index.js';
+import { site, firstName, gratitudes, affirmations } from '../data/index.js';
 
 // Every line that can come back in the post: the gratitudes and the
 // affirmations from Gratitude-Affirmations.csv, in one pile.
@@ -91,6 +91,12 @@ export default function Gratitude({ onClose }) {
                       opening words; an affirmation is a whole sentence already. */}
                   {letter.Type === 'Gratitude' && <p className="label">I am grateful for…</p>}
                   <p className="gratitude-letter-text">{letter.Text}</p>
+                  {/* Signed, like a letter, in the script the greeting uses for the name. */}
+                  {firstName && (
+                    <p className="gratitude-signoff">
+                      — from <span className="script">{firstName}</span>
+                    </p>
+                  )}
                 </div>
               )}
             </div>

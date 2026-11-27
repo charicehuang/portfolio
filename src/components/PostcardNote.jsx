@@ -1,8 +1,7 @@
-import { site } from '../data/index.js';
-
-// The first name from Site.csv ("Charice"), which the greeting signs in the
+// The first name from Site.csv ("Charice"), which the greeting sets in the
 // same script as "Thinking" in the tagline.
-const firstName = site('Name')?.split(/\s+/)[0];
+import { firstName } from '../data/index.js';
+
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 /** The greeting, with the first name, wherever it appears, set in Style Script. */

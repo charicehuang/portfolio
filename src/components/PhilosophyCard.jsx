@@ -2,6 +2,15 @@ import { useEffect, useRef } from 'react';
 import { Tagline } from './Landing.jsx';
 import Seal from './Seal.jsx';
 
+/**
+ * "Leading Life Philosophy: ..." -> a small label + the line itself.
+ * Display-only: straight quotes become curly ones. The data file is left as typed.
+ */
+function splitPhilosophy(text) {
+  const split = text.match(/^([^:"“]{1,48}):\s*([\s\S]+)$/);
+  return { label: split?.[1], body: (split ? split[2] : text).replace(/"([^"]*)"/g, '“$1”') };
+}
+
 export default function PhilosophyCard({ tagline, text, onClose }) {
   const closeRef = useRef(null);
 
@@ -12,11 +21,7 @@ export default function PhilosophyCard({ tagline, text, onClose }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  // "Leading Life Philosophy: ..." -> small label + the line itself.
-  const split = text.match(/^([^:"“]{1,48}):\s*([\s\S]+)$/);
-  const label = split?.[1];
-  // Display-only: straight quotes become curly ones. The data file is left as typed.
-  const body = (split ? split[2] : text).replace(/"([^"]*)"/g, '“$1”');
+  const { label, body } = splitPhilosophy(text);
 
   return (
     <div className="overlay" onClick={onClose}>

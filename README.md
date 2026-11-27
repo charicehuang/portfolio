@@ -32,6 +32,15 @@ the one named in that row's `Front motif` column in `Postcards.csv` (plum, cherr
 quince, pear or apricot). If that cell is blank, one is picked by the section's position, so each
 section still gets a different flower.
 
+### A section's hover message
+
+The `Hover message` column in `Postcards.csv` is a short line that slips up above the section's card
+on the landing page when someone points at it (or reaches it with the keyboard). Phones can't hover,
+so it isn't shown there. Leave the cell blank for no message.
+
+The tagline has one too: the `Tagline hover` row in `Site.csv` is the note that slips out under
+"Thinking in Superposition". Clicking the tagline opens the full `Tagline card`.
+
 ### What's written on a postcard
 
 `Postcards.csv` has three columns for the writing on a postcard's back:

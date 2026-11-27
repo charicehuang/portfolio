@@ -41,6 +41,9 @@ export const site = (field) => {
   return key ? siteMap.get(key) : undefined;
 };
 
+/** The first word of Name ("Charice"), for the greeting and for signing things. */
+export const firstName = site('Name')?.split(/\s+/)[0];
+
 /** Postcards, in sheet order. Each: { Postcard, 'Front motif'?, 'Note on the back'? } */
 export const postcards = parseCsv(postcardsCsv).filter((p) => p.Postcard);
 
